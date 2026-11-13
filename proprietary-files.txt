@@ -1,0 +1,17 @@
+# Xiaomi 17 (pudding) HyperOS OS3.0.335.0.XPCEUXM (EEA) fastboot ROM.
+
+# Camera - MIUI camera app (com.android.camera, 6.5.000340.1) from stock product, installed
+# as a system privileged app with the system_ext JNI libraries it loads, a system-side OpenCL
+# loader and system copies of the DSP RPC libraries for its AI algorithms. The system copies of
+# vendor libraries are plain copies: as modules they would clash with the vendor modules of the
+# same name and link those
+product/priv-app/MiuiCamera/MiuiCamera.apk:system/priv-app/MiuiCamera/MiuiCamera.apk;OVERRIDES=Aperture,Camera2
+system_ext/lib64/libcamera_algoup_jni.xiaomi.so:system/lib64/libcamera_algoup_jni.xiaomi.so
+system_ext/lib64/libcamera_mianode_jni.xiaomi.so:system/lib64/libcamera_mianode_jni.xiaomi.so
+system_ext/lib64/libmicampostproc_client.so:system/lib64/libmicampostproc_client.so
+system_ext/lib64/libopencl-camera.so:system/lib64/libOpenCL.so;FIX_SONAME;MAKE_COPY_RULE_ONLY
+system_ext/lib64/vendor.xiaomi.hardware.campostproc@1.0.so:system/lib64/vendor.xiaomi.hardware.campostproc@1.0.so
+vendor/lib64/libcdsprpc.so:system/lib64/libcdsprpc.so;MAKE_COPY_RULE_ONLY
+vendor/lib64/libvmmem.so:system/lib64/libvmmem.so;MAKE_COPY_RULE_ONLY
+vendor/lib64/vendor.qti.hardware.dsp-V1-ndk.so:system/lib64/vendor.qti.hardware.dsp-V1-ndk.so;MAKE_COPY_RULE_ONLY
+vendor/lib64/vendor.qti.hardware.dsp@1.0.so:system/lib64/vendor.qti.hardware.dsp@1.0.so;MAKE_COPY_RULE_ONLY

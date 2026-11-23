@@ -2,8 +2,6 @@
 <!--
      SPDX-FileCopyrightText: The LineageOS Project
      SPDX-License-Identifier: Apache-2.0
-
-     The MIUI camera uses hidden framework APIs that HyperOS exposes to it.
 -->
 <config>
     <hidden-api-whitelisted-app package="com.android.camera" />

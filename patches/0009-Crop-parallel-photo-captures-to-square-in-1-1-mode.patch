@@ -1,0 +1,177 @@
+From 5f11516db8b1a27979681a01f3c6bdc2826eb046 Mon Sep 17 00:00:00 2001
+From: marcmyworld <moviesminister@gmail.com>
+Date: Mon, 23 Nov 2026 18:59:58 +0530
+Subject: Crop parallel photo captures to square in 1:1 mode
+
+While 1:1 quick-view streams and UI viewfinders are cropped to square,
+the parallel image save pipeline in ParallelSaveRequest written to storage
+directly writes the uncropped 4:3 sensor snapshot JPEG from Qualcomm Chi
+HAL hardware (4096x3072).
+
+Detect 1:1 square capture in ParallelSaveRequest and perform a center
+square crop on the JPEG buffer prior to watermark stamping and storage
+writing, updating the MediaStore image dimensions to match (3072x3072)
+while preserving all EXIF tags.
+---
+ smali/u6/n.smali | 138 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 138 insertions(+)
+
+diff --git a/smali/u6/n.smali b/smali/u6/n.smali
+index 3f70ac68..3e7a4305 100644
+--- a/smali/u6/n.smali
++++ b/smali/u6/n.smali
+@@ -107,6 +107,142 @@
+     return-void
+ .end method
+ 
++.method private cropSquareIfNeeded()V
++    .locals 5
++
++    :try_start_0
++    iget-object v0, p0, Lu6/b;->d:LQc/s;
++
++    if-nez v0, :cond_0
++
++    return-void
++
++    :cond_0
++    iget-object v0, v0, LQc/s;->j:LQc/A;
++
++    if-nez v0, :cond_1
++
++    return-void
++
++    :cond_1
++    iget-boolean v0, v0, LQc/A;->a:Z
++
++    if-nez v0, :cond_2
++
++    return-void
++
++    :cond_2
++    iget-object v0, p0, Lu6/b;->e:[B
++
++    if-eqz v0, :cond_7
++
++    array-length v1, v0
++
++    if-nez v1, :cond_3
++
++    goto :goto_0
++
++    :cond_3
++    array-length v1, v0
++
++    const/4 v2, 0x0
++
++    invoke-static {v0, v2, v1}, Landroid/graphics/BitmapFactory;->decodeByteArray([BII)Landroid/graphics/Bitmap;
++
++    move-result-object v1
++
++    if-nez v1, :cond_4
++
++    return-void
++
++    :cond_4
++    invoke-virtual {v1}, Landroid/graphics/Bitmap;->getWidth()I
++
++    move-result v2
++
++    invoke-virtual {v1}, Landroid/graphics/Bitmap;->getHeight()I
++
++    move-result v3
++
++    if-ne v2, v3, :cond_5
++
++    invoke-virtual {v1}, Landroid/graphics/Bitmap;->recycle()V
++
++    return-void
++
++    :cond_5
++    invoke-static {v2, v3}, Ljava/lang/Math;->min(II)I
++
++    move-result v4
++
++    sub-int/2addr v2, v4
++
++    div-int/lit8 v2, v2, 0x2
++
++    sub-int/2addr v3, v4
++
++    div-int/lit8 v3, v3, 0x2
++
++    invoke-static {v1, v2, v3, v4, v4}, Landroid/graphics/Bitmap;->createBitmap(Landroid/graphics/Bitmap;IIII)Landroid/graphics/Bitmap;
++
++    move-result-object v2
++
++    invoke-virtual {v1}, Landroid/graphics/Bitmap;->recycle()V
++
++    if-nez v2, :cond_6
++
++    return-void
++
++    :cond_6
++    const/16 v1, 0x61
++
++    invoke-static {v1, v2}, Lrc/e;->f(ILandroid/graphics/Bitmap;)[B
++
++    move-result-object v1
++
++    invoke-virtual {v2}, Landroid/graphics/Bitmap;->recycle()V
++
++    if-eqz v1, :cond_7
++
++    invoke-static {v0}, Lab/a;->c([B)Lab/b;
++
++    move-result-object v0
++
++    if-eqz v0, :cond_6b
++
++    invoke-static {v0, v1}, Lab/a;->f(Lab/b;[B)[B
++
++    move-result-object v0
++
++    if-eqz v0, :cond_6b
++
++    move-object v1, v0
++
++    :cond_6b
++    iput-object v1, p0, Lu6/b;->e:[B
++
++    iput v4, p0, Lu6/b;->i:I
++
++    iput v4, p0, Lu6/b;->j:I
++    :try_end_0
++    .catchall {:try_start_0 .. :try_end_0} :catch_all
++
++    :cond_7
++    :goto_0
++    return-void
++
++    :catch_all
++    move-exception v0
++
++    const-string v1, "ParallelSaveRequest"
++
++    const-string v2, "cropSquareIfNeeded failed"
++
++    invoke-static {v1, v2, v0}, Lcom/android/camera/log/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
++
++    return-void
++.end method
++
+ .method public final l()V
+     .locals 51
+ 
+@@ -150,6 +286,8 @@
+     invoke-interface {v6, v5}, Lu6/u;->onProcessorJpegFinish(LQc/s;)V
+ 
+     :goto_0
++    invoke-direct {v0}, Lu6/n;->cropSquareIfNeeded()V
++
+     iget-object v5, v0, Lu6/b;->e:[B
+ 
+     const/4 v6, 0x0
+-- 
+2.56.0
+

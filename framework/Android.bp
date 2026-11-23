@@ -1,0 +1,14 @@
+//
+// SPDX-FileCopyrightText: The LineageOS Project
+// SPDX-License-Identifier: Apache-2.0
+//
+
+java_library {
+    name: "xiaomi-audiometadata",
+    installable: true,
+    provides_uses_lib: "xiaomi-audiometadata",
+    sdk_version: "system_current",
+    srcs: [
+        "src/**/*.java",
+    ],
+}

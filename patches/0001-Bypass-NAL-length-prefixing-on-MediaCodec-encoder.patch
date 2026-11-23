@@ -1,0 +1,25 @@
+From ab9ccf811fe2c12f4c2d7cc87e0a9d8957a64c78 Mon Sep 17 00:00:00 2001
+From: marcmyworld <moviesminister@gmail.com>
+Date: Mon, 23 Nov 2026 01:34:22 +0530
+Subject: Bypass NAL length prefixing on MediaCodec encoder
+
+---
+ smali_classes5/De/h.smali | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/smali_classes5/De/h.smali b/smali_classes5/De/h.smali
+index 22059649..ecbfa283 100644
+--- a/smali_classes5/De/h.smali
++++ b/smali_classes5/De/h.smali
+@@ -776,7 +776,7 @@
+ 
+     iget-boolean v7, v3, LDe/u;->y:Z
+ 
+-    if-eqz v7, :cond_1c
++    goto :cond_1c
+ 
+     iget v7, v3, LDe/u;->l:I
+ 
+-- 
+2.56.0
+

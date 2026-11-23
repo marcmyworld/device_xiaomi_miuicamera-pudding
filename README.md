@@ -1,39 +1,28 @@
-# device_xiaomi_miuicamera-pudding
+# Camera device tree for Xiaomi 17 (pudding)
 
-The stock MIUI camera app (`com.android.camera`, 6.5.000340.1) for the Xiaomi 17 (`pudding`),
-taken from the stock HyperOS **OS3.0.335.0.XPCEUXM** (EEA) firmware, with what it needs on an
-AOSP-based ROM:
+This repository provides the device-specific configurations and patches needed to include miuicamera on aosp roms for `pudding`
 
-- the system-side libraries it loads (its JNI libraries, an OpenCL loader and system copies of
-  the DSP RPC libraries for its AI algorithms),
-- its privileged and default runtime permissions and hidden API allowlist,
-- the camera HAL properties that give it the privileged and auxiliary cameras,
-- the stock device, region and HyperOS version properties it identifies the device with.
+## Device specifications
 
-The camera HAL itself is part of the device tree and its vendor blobs
-([device_xiaomi_pudding](https://github.com/xiaomi17-pudding-dev/device_xiaomi_pudding)); this
-repo only adds the MIUI camera app on top. It replaces the AOSP and Aperture camera apps.
+| Camera Sensor | Specification |
+| :--- | :--- |
+| Main | 50MP (23mm, f/1.67, Light Fusion 950 sensor, OIS) |
+| Telephoto | 50MP (60mm floating telephoto, f/2.0, 10cm macro support, OIS) |
+| Ultrawide | 50MP (17mm, f/2.4, 102° field of view) |
+| Front | 50MP (21mm, f/2.2, autofocus) |
 
 ## Usage
 
-Sync this repo to `device/xiaomi/miuicamera-pudding` and its blobs,
-[vendor_xiaomi_miuicamera-pudding](https://gitlab.com/xiaomi17-pudding-dev/vendor_xiaomi_miuicamera-pudding),
-to `vendor/xiaomi/miuicamera-pudding`. Both are in the local manifests of
-[local_manifests_pudding](https://github.com/xiaomi17-pudding-dev/local_manifests_pudding).
-The device tree inherits it with:
+To include this camera package in your ROM build, inherit the makefile in your device tree:
 
 ```make
 $(call inherit-product-if-exists, device/xiaomi/miuicamera-pudding/miuicamera.mk)
 ```
 
-## Updating the blobs
+## Extracting proprietary files
 
-Extract them from an unpacked stock firmware, as for the device tree:
+To extract proprietary camera blobs and apply apktool patches from an unpacked firmware image:
 
 ```bash
-cd device/xiaomi/miuicamera-pudding
-./extract-files.py <unpacked-firmware>
+./extract-files.py <path-to-firmware>
 ```
-
-The vendor repo stores `MiuiCamera.apk` (larger than 100 MiB) with Git LFS: install
-`git-lfs` and sync with `repo init ... --git-lfs`.

@@ -1,0 +1,2 @@
+# Allow platform apps (such as MiuiCamera) to execute extracted native libraries from Qigsaw dynamic feature plugins (e.g. Panorama, VLOG, etc.)
+allow platform_app_all app_data_file:file execute;

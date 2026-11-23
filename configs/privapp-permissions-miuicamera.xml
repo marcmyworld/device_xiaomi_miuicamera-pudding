@@ -2,10 +2,6 @@
 <!--
      SPDX-FileCopyrightText: The LineageOS Project
      SPDX-License-Identifier: Apache-2.0
-
-     Privileged permissions of the MIUI camera, as allowed for it by the stock
-     product/etc/permissions/privapp-permissions-product.xml (OS3.0.335.0.XPCEUXM), without its
-     MediaTek-only permission.
 -->
 <permissions>
     <privapp-permissions package="com.android.camera">

@@ -8,18 +8,18 @@ soong_namespace {
 
 prebuilt_etc {
     name: "privapp-permissions-miuicamera.xml",
-    src: "privapp-permissions-miuicamera.xml",
+    src: "configs/privapp-permissions-miuicamera.xml",
     sub_dir: "permissions",
 }
 
 prebuilt_etc {
     name: "default-permissions-miuicamera.xml",
-    src: "default-permissions-miuicamera.xml",
+    src: "configs/default-permissions-miuicamera.xml",
     sub_dir: "default-permissions",
 }
 
 prebuilt_etc {
     name: "hiddenapi-package-allowlist-miuicamera.xml",
-    src: "hiddenapi-package-allowlist-miuicamera.xml",
+    src: "configs/hiddenapi-package-allowlist-miuicamera.xml",
     sub_dir: "sysconfig",
 }

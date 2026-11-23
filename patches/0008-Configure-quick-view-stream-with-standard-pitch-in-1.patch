@@ -1,0 +1,33 @@
+From 1f1986fd115b8cae80f7bee1b3e4c4558e0d0054 Mon Sep 17 00:00:00 2001
+From: marcmyworld <moviesminister@gmail.com>
+Date: Mon, 23 Nov 2026 17:05:56 +0530
+Subject: Configure quick-view stream with standard pitch in 1:1 mode
+
+On Qualcomm SM8850 (Snapdragon 8 Elite), CamX writes early quick-view YUV (0x23) buffers with a 1280-pixel row pitch matching preview streams. When 1:1 aspect ratio configured PhotoImageReader with a square buffer (e.g. 1080x1080), Gralloc allocated a buffer with row stride 1088, creating a 192-byte row stride mismatch that corrupted the early JPEG encoding into diagonal stripes and green banding.
+
+Configure PhotoImageReader to use 1280x960 when the aspect ratio is 1:1 square so row stride and camera ISP pitch align at 1280. The existing downstream pipeline in rc/e;->b automatically center-crops the resulting 1280x960 quick-view image to a pristine 960x960 square thumbnail.
+---
+ smali/l8/H0.smali | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/smali/l8/H0.smali b/smali/l8/H0.smali
+index 20f4a87c..2fb2e6a9 100644
+--- a/smali/l8/H0.smali
++++ b/smali/l8/H0.smali
+@@ -884,6 +884,13 @@
+ 
+     move-result v0
+ 
++    if-ne v1, v0, :cond_skip_1x1
++
++    const/16 v1, 0x500
++
++    const/16 v0, 0x3c0
++
++    :cond_skip_1x1
+     iget v2, p1, Ll8/J;->V:I
+ 
+     iget p1, p1, Ll8/J;->Y:I
+-- 
+2.56.0
+

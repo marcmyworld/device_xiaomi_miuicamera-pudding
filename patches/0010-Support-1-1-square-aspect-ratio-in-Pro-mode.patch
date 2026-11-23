@@ -1,0 +1,72 @@
+From d3c0c08fcd036410851577529f2b2622fc462204 Mon Sep 17 00:00:00 2001
+From: marcmyworld <moviesminister@gmail.com>
+Date: Tue, 24 Nov 2026 21:17:30 +0530
+Subject: [PATCH] Support 1:1 square aspect ratio in Pro mode
+
+---
+ smali/com/android/camera/data/data/m.smali |  6 ++++++
+ smali/d2/M.smali                           | 17 ++++++++++++++++-
+ 2 files changed, 22 insertions(+), 1 deletion(-)
+
+diff --git a/smali/com/android/camera/data/data/m.smali b/smali/com/android/camera/data/data/m.smali
+index bdd1104e..3d7a8a26 100644
+--- a/smali/com/android/camera/data/data/m.smali
++++ b/smali/com/android/camera/data/data/m.smali
+@@ -2260,8 +2260,14 @@
+ 
+     const/16 v1, 0xa3
+ 
++    if-eq v0, v1, :cond_check
++
++    const/16 v1, 0xa7
++
+     if-ne v0, v1, :cond_0
+ 
++    :cond_check
++
+     invoke-static {}, Lb2/a;->a()Ld2/Q0;
+ 
+     move-result-object v0
+diff --git a/smali/d2/M.smali b/smali/d2/M.smali
+index 86849858..023aa055 100644
+--- a/smali/d2/M.smali
++++ b/smali/d2/M.smali
+@@ -661,8 +661,13 @@
+ 
+     const/16 v0, 0xa3
+ 
++    if-eq p1, v0, :cond_check_1x1
++
++    const/16 v0, 0xa7
++
+     if-ne p1, v0, :cond_0
+ 
++    :cond_check_1x1
+     invoke-virtual {p0}, Ld2/M;->l()Z
+ 
+     move-result v0
+@@ -1197,10 +1202,20 @@
+ .method public final l()Z
+     .locals 4
+ 
+-    iget-boolean v0, p0, Ld2/M;->d:Z
++    sget v1, Lcom/android/camera/module/G;->a:I
++
++    const/16 v0, 0xa7
++
++    if-ne v1, v0, :cond_use_photo
++
++    goto :cond_have_module
+ 
++    :cond_use_photo
+     const/16 v1, 0xa3
+ 
++    :cond_have_module
++    iget-boolean v0, p0, Ld2/M;->d:Z
++
+     const/4 v2, 0x0
+ 
+     if-nez v0, :cond_0
+-- 
+2.56.0
+

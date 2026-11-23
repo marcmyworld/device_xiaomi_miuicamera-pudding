@@ -2,9 +2,6 @@
 <!--
      SPDX-FileCopyrightText: The LineageOS Project
      SPDX-License-Identifier: Apache-2.0
-
-     Runtime permissions granted to the MIUI camera by default, as HyperOS does. The user can
-     still revoke them.
 -->
 <exceptions>
     <exception package="com.android.camera">

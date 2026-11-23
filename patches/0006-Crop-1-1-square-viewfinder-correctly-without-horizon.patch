@@ -1,0 +1,116 @@
+From d8811800c424e8896dfac9612d4f527bc3605d27 Mon Sep 17 00:00:00 2001
+From: marcmyworld <moviesminister@gmail.com>
+Date: Mon, 23 Nov 2026 15:45:07 +0530
+Subject: Crop 1:1 square viewfinder correctly without horizontal distortion
+
+When 1:1 aspect ratio is selected in Photo mode, the camera HAL provides a 4:3 preview stream (1280x960). Return UI_STYLE_SQUARE_1_1 (4) from the UI style ratio calculation, set CameraScreenNail scale factor to 0.75, and apply 0.75 vertical scale in SurfaceTextureWrapper so the 4:3 hardware preview stream is properly cropped to square without horizontal distortion or rotation skew.
+---
+ smali/B1/o2.smali         |  8 +-------
+ smali/w2/d.smali          | 13 +++++++++++--
+ smali_classes5/di/a.smali | 38 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 50 insertions(+), 9 deletions(-)
+
+diff --git a/smali/B1/o2.smali b/smali/B1/o2.smali
+index 1b639668..428bb81d 100644
+--- a/smali/B1/o2.smali
++++ b/smali/B1/o2.smali
+@@ -405,15 +405,9 @@
+     goto/16 :goto_8
+ 
+     :cond_b
+-    if-eq v0, v1, :cond_c
+-
+     iput v9, p0, LB1/o2;->u:F
+ 
+-    int-to-float v2, v0
+-
+-    int-to-float v1, v1
+-
+-    div-float/2addr v2, v1
++    const/high16 v2, 0x3f400000    # 0.75f
+ 
+     iput v2, p0, LB1/o2;->v:F
+ 
+diff --git a/smali/w2/d.smali b/smali/w2/d.smali
+index 3384fbb1..689391a9 100644
+--- a/smali/w2/d.smali
++++ b/smali/w2/d.smali
+@@ -285,6 +285,17 @@
+ .method public static c(IIZ)I
+     .locals 18
+ 
++    invoke-static {}, Lcom/android/camera/data/data/m;->b0()Z
++
++    move-result v0
++
++    if-eqz v0, :cond_start_ratio
++
++    const/4 v0, 0x4
++
++    return v0
++
++    :cond_start_ratio
+     move/from16 v0, p0
+ 
+     move/from16 v1, p1
+@@ -431,8 +442,6 @@
+     return v0
+ 
+     :cond_5
+-    if-eqz p2, :cond_6
+-
+     if-ne v0, v1, :cond_6
+ 
+     const/4 v0, 0x4
+diff --git a/smali_classes5/di/a.smali b/smali_classes5/di/a.smali
+index a0e5f998..1385cf92 100644
+--- a/smali_classes5/di/a.smali
++++ b/smali_classes5/di/a.smali
+@@ -240,6 +240,44 @@
+ 
+     invoke-virtual {v0, v1}, Landroid/graphics/SurfaceTexture;->getTransformMatrix([F)V
+ 
++    invoke-static {}, Lcom/android/camera/data/data/m;->b0()Z
++
++    move-result v0
++
++    if-eqz v0, :cond_check_reset
++
++    iget-object v0, p0, Ldi/a;->e:Landroid/graphics/PointF;
++
++    const/high16 v1, 0x3f800000    # 1.0f
++
++    const/high16 v2, 0x3f400000    # 0.75f
++
++    invoke-virtual {v0, v1, v2}, Landroid/graphics/PointF;->set(FF)V
++
++    goto :cond_proceed
++
++    :cond_check_reset
++    iget-object v0, p0, Ldi/a;->e:Landroid/graphics/PointF;
++
++    iget v1, v0, Landroid/graphics/PointF;->y:F
++
++    const/high16 v2, 0x3f400000    # 0.75f
++
++    cmpl-float v1, v1, v2
++
++    if-nez v1, :cond_proceed
++
++    iget v1, v0, Landroid/graphics/PointF;->x:F
++
++    const/high16 v2, 0x3f800000    # 1.0f
++
++    cmpl-float v1, v1, v2
++
++    if-nez v1, :cond_proceed
++
++    invoke-virtual {v0, v2, v2}, Landroid/graphics/PointF;->set(FF)V
++
++    :cond_proceed
+     iget-object v0, p0, Ldi/a;->e:Landroid/graphics/PointF;
+ 
+     iget v1, v0, Landroid/graphics/PointF;->x:F
+-- 
+2.56.0
+

@@ -32,7 +32,8 @@ PRODUCT_PRODUCT_PROPERTIES += \
     ro.miui.notch=1 \
     ro.miui.ui.version.code=816 \
     ro.miui.ui.version.name=V816 \
-    ro.product.mod_device=pudding_eea_global
+    ro.product.mod_device=pudding_eea_global \
+    ro.theme_customize=LCC
 
 # SELinux
 PRODUCT_PRIVATE_SEPOLICY_DIRS += \

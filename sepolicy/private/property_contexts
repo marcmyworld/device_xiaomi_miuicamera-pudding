@@ -1,3 +1,4 @@
 # Camera
 ro.miui.                    u:object_r:exported_system_prop:s0
 ro.product.mod_device       u:object_r:exported_default_prop:s0 exact string
+ro.theme_customize          u:object_r:exported_default_prop:s0 exact string

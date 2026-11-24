@@ -1,0 +1,51 @@
+From 72533c5c33ce54e715d212bbff7f2012d233f2a1 Mon Sep 17 00:00:00 2001
+From: marcmyworld <moviesminister@gmail.com>
+Date: Wed, 25 Nov 2026 00:09:15 +0530
+Subject: [PATCH] libcameraservice: Allow privileged clients to bypass
+ roundBufferDimensionNearest for RAW streams
+
+Camera 7 (Qualcomm mock reprocessing camera used by Xiaomi MIVI to generate
+RAW photos) does not expose LOGICAL_MULTI_CAMERA or RAW capabilities in its
+static metadata. Gating the privileged client bypass behind isLogicalCamera
+causes stream creation for format 0x20 (RAW_SENSOR) to fail with ERROR_ILLEGAL_ARGUMENT.
+
+Remove the isLogicalCamera requirement for RAW formats so that privileged
+clients like MiuiCamera can successfully capture RAW images without mock
+camera session configuration errors.
+---
+ .../utils/SessionConfigurationUtils.cpp       | 19 ++++---------------
+ 1 file changed, 4 insertions(+), 15 deletions(-)
+
+diff --git a/services/camera/libcameraservice/utils/SessionConfigurationUtils.cpp b/services/camera/libcameraservice/utils/SessionConfigurationUtils.cpp
+index 7cbf699..aacd7e9 100644
+--- a/services/camera/libcameraservice/utils/SessionConfigurationUtils.cpp
++++ b/services/camera/libcameraservice/utils/SessionConfigurationUtils.cpp
+@@ -218,21 +218,10 @@ bool roundBufferDimensionNearest(int32_t width, int32_t height,
+     if (isPriviledgedClient == true && bestWidth == -1 &&
+             (format == HAL_PIXEL_FORMAT_RAW10 || format == HAL_PIXEL_FORMAT_RAW12 ||
+             format == HAL_PIXEL_FORMAT_RAW16 || format == HAL_PIXEL_FORMAT_RAW_OPAQUE)) {
+-        bool isLogicalCamera = false;
+-        auto entry = info.find(ANDROID_REQUEST_AVAILABLE_CAPABILITIES);
+-        for (size_t i = 0; i < entry.count; ++i) {
+-            uint8_t capability = entry.data.u8[i];
+-            if (capability == ANDROID_REQUEST_AVAILABLE_CAPABILITIES_LOGICAL_MULTI_CAMERA ||
+-                    capability == ANDROID_REQUEST_AVAILABLE_CAPABILITIES_RAW) {
+-                isLogicalCamera = true;
+-                break;
+-            }
+-        }
+-
+-        if (isLogicalCamera == true) {
+-            bestWidth = width;
+-            bestHeight = height;
+-        }
++        ALOGI("Bypass roundBufferDimensionNearest for privilegedClient RAW streams "
++                "width %d height %d for format %d", width, height, format);
++        bestWidth = width;
++        bestHeight = height;
+     }
+ 
+     // Avoid roundBufferDimensionsNearest for privileged client YUV streams to meet the AIDE2
+-- 
+2.56.0
+

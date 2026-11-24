@@ -3,6 +3,12 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
+# Verify required source patches are applied during build evaluation
+_MIUICAM_PATH := $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))
+ifneq ($(shell bash $(_MIUICAM_PATH)/apply-source-patches.sh --check --quiet >/dev/null 2>&1 || echo MISSING),)
+$(warning [miuicamera-pudding] Required camera source patch(es) in patches-source/ are NOT applied! Run: bash $(_MIUICAM_PATH)/apply-source-patches.sh)
+endif
+
 # Inherit proprietary blobs
 $(call inherit-product, vendor/xiaomi/miuicamera-pudding/miuicamera-pudding-vendor.mk)
 

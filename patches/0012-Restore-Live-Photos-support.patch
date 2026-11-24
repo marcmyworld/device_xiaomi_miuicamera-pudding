@@ -1,0 +1,263 @@
+From 92f9a4d498421089f4f40f4c4f3f90389a9bbb81 Mon Sep 17 00:00:00 2001
+From: marcmyworld <moviesminister@gmail.com>
+Date: Wed, 25 Nov 2026 02:41:58 +0530
+Subject: [PATCH] Restore Live Photos support
+
+---
+ smali_classes3/Aa/a.smali                     | 223 +-----------------
+ ...355\211\272\355\211\270\355\211\271.smali" |   2 +-
+ 2 files changed, 3 insertions(+), 222 deletions(-)
+
+diff --git a/smali_classes3/Aa/a.smali b/smali_classes3/Aa/a.smali
+index 72d8860..e304a7f 100644
+--- a/smali_classes3/Aa/a.smali
++++ b/smali_classes3/Aa/a.smali
+@@ -1025,230 +1025,11 @@
+ .end method
+ 
+ .method public static final p()Z
+-    .locals 10
++    .locals 1
+ 
+     const/4 v0, 0x1
+ 
+-    sget-boolean v1, Lra/b;->k:Z
+-
+-    sget-object v1, Lra/b$b;->a:Lra/b;
+-
+-    invoke-virtual {v1}, Lra/b;->y()V
+-
+-    sget v1, LJf/a;->a:I
+-
+-    const-string v1, "ro.product.camera.livephoto.support"
+-
+-    const-string v2, "0"
+-
+-    invoke-static {v1, v2}, Lxf/a;->a(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+-
+-    move-result-object v1
+-
+-    invoke-static {v1}, Ljava/lang/Integer;->parseInt(Ljava/lang/String;)I
+-
+-    move-result v1
+-
+-    const/4 v2, 0x0
+-
+-    invoke-static {v1, v2}, LJf/a;->a(II)Z
+-
+-    move-result v3
+-
+-    invoke-static {v1, v0}, LJf/a;->a(II)Z
+-
+-    move-result v4
+-
+-    const/4 v5, 0x2
+-
+-    invoke-static {v1, v5}, LJf/a;->a(II)Z
+-
+-    move-result v5
+-
+-    new-instance v6, Ljava/lang/StringBuilder;
+-
+-    const-string v7, "isDeviceSupportLivePhoto isSupportByMeminfo "
+-
+-    invoke-direct {v6, v7}, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
+-
+-    invoke-virtual {v6, v5}, Ljava/lang/StringBuilder;->append(Z)Ljava/lang/StringBuilder;
+-
+-    invoke-virtual {v6}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+-
+-    move-result-object v6
+-
+-    const-string v7, "LivePhotoImp"
+-
+-    invoke-static {v7, v6}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
+-
+-    if-eqz v5, :cond_2
+-
+-    const-string v5, "getTotalMemory"
+-
+-    :try_start_0
+-    const-class v6, Landroid/os/Process;
+-
+-    const/4 v8, 0x0
+-
+-    invoke-virtual {v6, v5, v8}, Ljava/lang/Class;->getMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
+-
+-    move-result-object v6
+-
+-    invoke-virtual {v6, v8, v8}, Ljava/lang/reflect/Method;->invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;
+-
+-    move-result-object v6
+-
+-    check-cast v6, Ljava/lang/Long;
+-
+-    invoke-virtual {v6}, Ljava/lang/Long;->longValue()J
+-
+-    move-result-wide v5
+-    :try_end_0
+-    .catch Ljava/lang/NoSuchMethodException; {:try_start_0 .. :try_end_0} :catch_0
+-    .catch Ljava/lang/reflect/InvocationTargetException; {:try_start_0 .. :try_end_0} :catch_0
+-    .catch Ljava/lang/IllegalAccessException; {:try_start_0 .. :try_end_0} :catch_0
+-
+-    goto :goto_0
+-
+-    :catch_0
+-    move-exception v6
+-
+-    const-string v8, "ProcessCompat"
+-
+-    invoke-static {v8, v5, v6}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+-
+-    const-wide/16 v5, 0x0
+-
+-    :goto_0
+-    const-wide/32 v8, 0x3fffffff
+-
+-    add-long/2addr v5, v8
+-
+-    const-wide/32 v8, -0x40000000
+-
+-    and-long/2addr v5, v8
+-
+-    const-wide/32 v8, 0x40000000
+-
+-    div-long/2addr v5, v8
+-
+-    long-to-int v5, v5
+-
+-    const-string v6, "isDeviceSupportLivePhoto memory "
+-
+-    invoke-static {v5, v6, v7}, LB1/N;->h(ILjava/lang/String;Ljava/lang/String;)V
+-
+-    const/16 v6, 0x8
+-
+-    if-lt v5, v6, :cond_0
+-
+-    const/4 v5, 0x5
+-
+-    :goto_1
+-    invoke-static {v1, v5}, LJf/a;->a(II)Z
+-
+-    move-result v1
+-
+-    goto :goto_2
+-
+-    :cond_0
+-    const/4 v6, 0x6
+-
+-    const/4 v7, 0x4
+-
+-    if-ne v5, v6, :cond_1
+-
+-    invoke-static {v1, v7}, LJf/a;->a(II)Z
+-
+-    move-result v1
+-
+-    goto :goto_2
+-
+-    :cond_1
+-    if-ne v5, v7, :cond_2
+-
+-    const/4 v5, 0x3
+-
+-    goto :goto_1
+-
+-    :cond_2
+-    move v1, v0
+-
+-    :goto_2
+-    const-string v5, "ro.product.mod_device"
+-
+-    const-string v6, ""
+-
+-    invoke-static {v5, v6}, Lxf/a;->a(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+-
+-    move-result-object v5
+-
+-    const-string v6, "_global"
+-
+-    invoke-virtual {v5, v6}, Ljava/lang/String;->contains(Ljava/lang/CharSequence;)Z
+-
+-    move-result v5
+-
+-    if-eqz v5, :cond_3
+-
+-    if-eqz v4, :cond_3
+-
+-    move v4, v1
+-
+-    goto :goto_3
+-
+-    :cond_3
+-    move v4, v2
+-
+-    :goto_3
+-    if-nez v5, :cond_7
+-
+-    if-eqz v3, :cond_4
+-
+-    goto :goto_6
+-
+-    :cond_4
+-    :goto_4
+-    sget-object v1, LJf/c;->b:LJf/b;
+-
+-    invoke-virtual {v1}, Ljava/util/ArrayList;->size()I
+-
+-    move-result v3
+-
+-    if-ge v2, v3, :cond_6
+-
+-    sget-object v3, Landroid/os/Build;->DEVICE:Ljava/lang/String;
+-
+-    invoke-virtual {v1, v2}, Ljava/util/ArrayList;->get(I)Ljava/lang/Object;
+-
+-    move-result-object v1
+-
+-    invoke-virtual {v3, v1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+-
+-    move-result v1
+-
+-    if-eqz v1, :cond_5
+-
+-    sput-boolean v0, LJf/c;->a:Z
+-
+-    goto :goto_5
+-
+-    :cond_5
+-    add-int/2addr v2, v0
+-
+-    goto :goto_4
+-
+-    :cond_6
+-    :goto_5
+-    sget-boolean v1, LJf/c;->a:Z
+-
+-    goto :goto_6
+-
+-    :cond_7
+-    move v1, v4
+-
+-    :goto_6
+-    return v1
++    return v0
+ .end method
+ 
+ .method public static q(C)Z
+diff --git "a/smali_classes3/\355\211\264\355\211\270\355\211\272\355\210\271\355\211\272\355\211\276\355\210\271\355\211\263\355\211\262\355\211\241\355\211\276\355\211\264\355\211\262\355\210\271\355\211\264\355\211\270\355\211\272\355\211\272\355\211\270\355\211\271\355\210\271\355\211\224\355\211\270\355\211\272\355\211\272\355\211\270\355\211\271.smali" "b/smali_classes3/\355\211\264\355\211\270\355\211\272\355\210\271\355\211\272\355\211\276\355\210\271\355\211\263\355\211\262\355\211\241\355\211\276\355\211\264\355\211\262\355\210\271\355\211\264\355\211\270\355\211\272\355\211\272\355\211\270\355\211\271\355\210\271\355\211\224\355\211\270\355\211\272\355\211\272\355\211\270\355\211\271.smali"
+index 8cf85d7..94a77e4 100644
+--- "a/smali_classes3/\355\211\264\355\211\270\355\211\272\355\210\271\355\211\272\355\211\276\355\210\271\355\211\263\355\211\262\355\211\241\355\211\276\355\211\264\355\211\262\355\210\271\355\211\264\355\211\270\355\211\272\355\211\272\355\211\270\355\211\271\355\210\271\355\211\224\355\211\270\355\211\272\355\211\272\355\211\270\355\211\271.smali"
++++ "b/smali_classes3/\355\211\264\355\211\270\355\211\272\355\210\271\355\211\272\355\211\276\355\210\271\355\211\263\355\211\262\355\211\241\355\211\276\355\211\264\355\211\262\355\210\271\355\211\264\355\211\270\355\211\272\355\211\272\355\211\270\355\211\271\355\210\271\355\211\224\355\211\270\355\211\272\355\211\272\355\211\270\355\211\271.smali"
+@@ -1356,7 +1356,7 @@
+ .method public T1()Z
+     .locals 0
+ 
+-    instance-of p0, p0, L凳凿函冾函凹冾凴凵処凹凳凵冾凢凵凴函凹冾凓凿函函凿凾凞凿凤凵;
++    const/4 p0, 0x1
+ 
+     return p0
+ .end method
+-- 
+2.56.0
+

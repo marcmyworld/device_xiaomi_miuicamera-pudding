@@ -33,7 +33,8 @@ PRODUCT_PRODUCT_PROPERTIES += \
     ro.miui.ui.version.code=816 \
     ro.miui.ui.version.name=V816 \
     ro.product.mod_device=pudding_eea_global \
-    ro.theme_customize=LCC
+    ro.theme_customize=LCC \
+    ro.product.camera.livephoto.support=3
 
 # SELinux
 PRODUCT_PRIVATE_SEPOLICY_DIRS += \
